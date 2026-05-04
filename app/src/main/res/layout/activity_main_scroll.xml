@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_dark"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <!-- ── HEADER ── -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="24dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="J.A.R.V.I.S"
+                    android:textColor="@color/accent_blue"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.15"
+                    android:fontFamily="@font/orbitron" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Just A Rather Very Intelligent System"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="10sp"
+                    android:letterSpacing="0.05" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="00:00"
+                android:textColor="@color/accent_blue"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:fontFamily="@font/orbitron" />
+
+        </LinearLayout>
+
+        <!-- ── JARVIS CORE VISUAL ── -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            android:layout_marginBottom="24dp"
+            android:gravity="center">
+
+            <!-- Outer glow ring -->
+            <View
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_gravity="center"
+                android:background="@drawable/circle_glow_outer" />
+
+            <!-- Inner ring -->
+            <View
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:layout_gravity="center"
+                android:background="@drawable/circle_glow_inner" />
+
+            <!-- Core arc reactor icon -->
+            <ImageView
+                android:id="@+id/iv_jarvis_core"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_arc_reactor"
+                android:contentDescription="JARVIS Core" />
+
+        </FrameLayout>
+
+        <!-- ── STATUS CARD ── -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardBackgroundColor="@color/card_bg"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/tv_system_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="CHECKING SYSTEMS..."
+                    android:textColor="@color/accent_green"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.1"
+                    android:layout_marginBottom="12dp" />
+
+                <!-- Accessibility status row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="8dp">
+
+                    <ImageView
+                        android:id="@+id/status_accessibility"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_warning"
+                        android:contentDescription="Accessibility status" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Accessibility Service"
+                        android:textColor="@color/text_primary"
+                        android:textSize="14sp"
+                        android:layout_marginStart="10dp" />
+
+                </LinearLayout>
+
+                <!-- Microphone status row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:id="@+id/status_mic"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_warning"
+                        android:contentDescription="Microphone status" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Microphone Permission"
+                        android:textColor="@color/text_primary"
+                        android:textSize="14sp"
+                        android:layout_marginStart="10dp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- ── ACTION BUTTONS ── -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardBackgroundColor="@color/card_bg"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="CONTROLS"
+                    android:textColor="@color/accent_blue"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.15"
+                    android:layout_marginBottom="14dp" />
+
+                <Button
+                    android:id="@+id/btn_enable_jarvis"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:text="ENABLE ACCESSIBILITY"
+                    android:textColor="@color/bg_dark"
+                    android:textStyle="bold"
+                    android:backgroundTint="@color/accent_blue"
+                    android:layout_marginBottom="10dp"
+                    android:stateListAnimator="@null" />
+
+                <Button
+                    android:id="@+id/btn_overlay_permission"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:text="GRANT OVERLAY PERMISSION"
+                    android:textColor="@color/bg_dark"
+                    android:textStyle="bold"
+                    android:backgroundTint="@color/accent_cyan"
+                    android:layout_marginBottom="10dp"
+                    android:stateListAnimator="@null" />
+
+                <Button
+                    android:id="@+id/btn_start_service"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:text="START VOICE SERVICE"
+                    android:textColor="@color/bg_dark"
+                    android:textStyle="bold"
+                    android:backgroundTint="@color/accent_green"
+                    android:layout_marginBottom="10dp"
+                    android:stateListAnimator="@null" />
+
+                <Button
+                    android:id="@+id/btn_test_voice"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:text="TEST VOICE OUTPUT"
+                    android:textColor="@color/text_primary"
+                    android:textStyle="bold"
+                    android:backgroundTint="@color/card_border"
+                    android:stateListAnimator="@null" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- ── ACTIVITY LOG ── -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="80dp"
+            app:cardBackgroundColor="@color/card_bg"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ACTIVITY LOG"
+                    android:textColor="@color/accent_blue"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.15"
+                    android:layout_marginBottom="10dp" />
+
+                <TextView
+                    android:id="@+id/tv_activity_log"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="80dp"
+                    android:text="System initialized. Awaiting commands..."
+                    android:textColor="@color/text_secondary"
+                    android:textSize="12sp"
+                    android:fontFamily="monospace"
+                    android:lineSpacingMultiplier="1.4" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+    </LinearLayout>
+
+</ScrollView>
+
+<!-- ── FAB MIC BUTTON (overlay) ── -->
+<!-- Note: FAB needs to be in a CoordinatorLayout or FrameLayout; declared separately -->

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Outer glowing ring for the JARVIS core visual -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <solid android:color="#0A1A2E" />
+    <stroke
+        android:width="2dp"
+        android:color="#1A4D7A" />
+    <size
+        android:width="210dp"
+        android:height="210dp" />
+</shape>

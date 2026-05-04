@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_dark"
+    android:fitsSystemWindows="true">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="20dp"
+            android:paddingTop="48dp"
+            android:paddingBottom="100dp">
+
+            <!-- ── HEADER ── -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="28dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="J.A.R.V.I.S"
+                        android:textColor="@color/accent_blue"
+                        android:textSize="30sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.12"
+                        android:fontFamily="sans-serif-condensed" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Just A Rather Very Intelligent System"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="10sp" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tv_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="00:00"
+                    android:textColor="@color/accent_blue"
+                    android:textSize="26sp"
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-condensed" />
+
+            </LinearLayout>
+
+            <!-- ── ARC REACTOR CORE ── -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="230dp"
+                android:layout_marginBottom="28dp">
+
+                <View
+                    android:layout_width="210dp"
+                    android:layout_height="210dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/circle_glow_outer" />
+
+                <View
+                    android:layout_width="165dp"
+                    android:layout_height="165dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/circle_glow_inner" />
+
+                <ImageView
+                    android:id="@+id/iv_jarvis_core"
+                    android:layout_width="110dp"
+                    android:layout_height="110dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_arc_reactor"
+                    android:contentDescription="JARVIS Arc Reactor" />
+
+            </FrameLayout>
+
+            <!-- ── STATUS CARD ── -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="14dp"
+                app:cardBackgroundColor="@color/card_bg"
+                app:cardCornerRadius="18dp"
+                app:cardElevation="10dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="18dp">
+
+                    <TextView
+                        android:id="@+id/tv_system_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="CHECKING SYSTEMS..."
+                        android:textColor="@color/accent_green"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.12"
+                        android:layout_marginBottom="14dp" />
+
+                    <!-- Accessibility row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="10dp">
+                        <ImageView
+                            android:id="@+id/status_accessibility"
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:src="@drawable/ic_warning"
+                            android:contentDescription="Accessibility status" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Accessibility Service"
+                            android:textColor="@color/text_primary"
+                            android:textSize="14sp"
+                            android:layout_marginStart="12dp" />
+                    </LinearLayout>
+
+                    <!-- Microphone row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="10dp">
+                        <ImageView
+                            android:id="@+id/status_mic"
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:src="@drawable/ic_warning"
+                            android:contentDescription="Microphone status" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Microphone Permission"
+                            android:textColor="@color/text_primary"
+                            android:textSize="14sp"
+                            android:layout_marginStart="12dp" />
+                    </LinearLayout>
+
+                    <!-- Voice Service row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+                        <ImageView
+                            android:id="@+id/status_service"
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:src="@drawable/ic_warning"
+                            android:contentDescription="Voice service status" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Always-Listening Service"
+                            android:textColor="@color/text_primary"
+                            android:textSize="14sp"
+                            android:layout_marginStart="12dp" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- ── CONTROL BUTTONS ── -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="14dp"
+                app:cardBackgroundColor="@color/card_bg"
+                app:cardCornerRadius="18dp"
+                app:cardElevation="10dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="18dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="SYSTEM CONTROLS"
+                        android:textColor="@color/accent_blue"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.12"
+                        android:layout_marginBottom="14dp" />
+
+                    <Button
+                        android:id="@+id/btn_start_listening"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:text="▶  START ALWAYS-LISTENING"
+                        android:textColor="@color/bg_dark"
+                        android:textStyle="bold"
+                        android:backgroundTint="@color/accent_green"
+                        android:layout_marginBottom="10dp"
+                        android:stateListAnimator="@null" />
+
+                    <Button
+                        android:id="@+id/btn_enable_accessibility"
+                        android:layout_width="match_parent"
+                        android:layout_height="54dp"
+                        android:text="⚙  ENABLE ACCESSIBILITY SERVICE"
+                        android:textColor="@color/bg_dark"
+                        android:textStyle="bold"
+                        android:backgroundTint="@color/accent_blue"
+                        android:layout_marginBottom="10dp"
+                        android:stateListAnimator="@null" />
+
+                    <Button
+                        android:id="@+id/btn_overlay_permission"
+                        android:layout_width="match_parent"
+                        android:layout_height="54dp"
+                        android:text="◈  GRANT OVERLAY PERMISSION"
+                        android:textColor="@color/bg_dark"
+                        android:textStyle="bold"
+                        android:backgroundTint="@color/accent_cyan"
+                        android:layout_marginBottom="10dp"
+                        android:stateListAnimator="@null" />
+
+                    <Button
+                        android:id="@+id/btn_test_voice"
+                        android:layout_width="match_parent"
+                        android:layout_height="54dp"
+                        android:text="♪  TEST VOICE OUTPUT"
+                        android:textColor="@color/text_primary"
+                        android:textStyle="bold"
+                        android:backgroundTint="@color/card_border"
+                        android:layout_marginBottom="10dp"
+                        android:stateListAnimator="@null" />
+
+                    <Button
+                        android:id="@+id/btn_grant_permissions"
+                        android:layout_width="match_parent"
+                        android:layout_height="54dp"
+                        android:text="@string/grant_advanced"
+                        android:textColor="@android:color/white"
+                        android:textStyle="bold"
+                        android:backgroundTint="#FF3333"
+                        android:stateListAnimator="@null" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- ── ACTIVITY LOG ── -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/card_bg"
+                app:cardCornerRadius="18dp"
+                app:cardElevation="10dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="18dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="ACTIVITY LOG"
+                        android:textColor="@color/accent_blue"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.12"
+                        android:layout_marginBottom="10dp" />
+
+                    <TextView
+                        android:id="@+id/tv_activity_log"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="90dp"
+                        android:text="System initialized. Awaiting commands..."
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp"
+                        android:fontFamily="monospace"
+                        android:lineSpacingMultiplier="1.5" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <!-- ── FAB ── -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_mic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="24dp"
+        android:contentDescription="Manual voice trigger"
+        android:src="@drawable/ic_mic"
+        app:backgroundTint="@color/accent_blue"
+        app:tint="@android:color/white"
+        app:fabSize="normal"
+        app:elevation="12dp" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

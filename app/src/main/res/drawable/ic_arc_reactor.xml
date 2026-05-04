@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Arc Reactor / JARVIS Core icon -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="110dp"
+    android:height="110dp"
+    android:viewportWidth="110"
+    android:viewportHeight="110">
+
+    <!-- Outer ring -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#00BFFF"
+        android:strokeWidth="3"
+        android:pathData="M55,10 A45,45 0 1,1 54.999,10 Z" />
+
+    <!-- Middle ring -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#0077B6"
+        android:strokeWidth="2"
+        android:pathData="M55,22 A33,33 0 1,1 54.999,22 Z" />
+
+    <!-- Inner filled core -->
+    <path
+        android:fillColor="#001A33"
+        android:strokeColor="#00BFFF"
+        android:strokeWidth="2"
+        android:pathData="M55,34 A21,21 0 1,1 54.999,34 Z" />
+
+    <!-- Core center bright -->
+    <path
+        android:fillColor="#00BFFF"
+        android:pathData="M55,43 A12,12 0 1,1 54.999,43 Z" />
+
+    <!-- Spoke lines -->
+    <path
+        android:strokeColor="#00BFFF"
+        android:strokeWidth="1.5"
+        android:fillColor="#00000000"
+        android:pathData="M55,10 L55,22" />
+    <path
+        android:strokeColor="#00BFFF"
+        android:strokeWidth="1.5"
+        android:fillColor="#00000000"
+        android:pathData="M55,88 L55,100" />
+    <path
+        android:strokeColor="#00BFFF"
+        android:strokeWidth="1.5"
+        android:fillColor="#00000000"
+        android:pathData="M10,55 L22,55" />
+    <path
+        android:strokeColor="#00BFFF"
+        android:strokeWidth="1.5"
+        android:fillColor="#00000000"
+        android:pathData="M88,55 L100,55" />
+
+</vector>

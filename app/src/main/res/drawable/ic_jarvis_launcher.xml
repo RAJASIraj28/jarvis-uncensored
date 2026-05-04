@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Launcher icon for JARVIS — arc reactor style -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Dark background -->
+    <path
+        android:fillColor="#0A0E1A"
+        android:pathData="M0,0h108v108h-108z" />
+
+    <!-- Outer ring -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#00BFFF"
+        android:strokeWidth="3"
+        android:pathData="M54,12 A42,42 0 1,1 53.999,12 Z" />
+
+    <!-- Middle ring -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#0077B6"
+        android:strokeWidth="2"
+        android:pathData="M54,24 A30,30 0 1,1 53.999,24 Z" />
+
+    <!-- Inner core -->
+    <path
+        android:fillColor="#001830"
+        android:strokeColor="#00BFFF"
+        android:strokeWidth="2"
+        android:pathData="M54,36 A18,18 0 1,1 53.999,36 Z" />
+
+    <!-- Bright center -->
+    <path
+        android:fillColor="#00BFFF"
+        android:pathData="M54,44 A10,10 0 1,1 53.999,44 Z" />
+
+    <!-- Spoke lines -->
+    <path android:strokeColor="#00BFFF" android:strokeWidth="2" android:fillColor="#00000000" android:pathData="M54,12 L54,24" />
+    <path android:strokeColor="#00BFFF" android:strokeWidth="2" android:fillColor="#00000000" android:pathData="M54,84 L54,96" />
+    <path android:strokeColor="#00BFFF" android:strokeWidth="2" android:fillColor="#00000000" android:pathData="M12,54 L24,54" />
+    <path android:strokeColor="#00BFFF" android:strokeWidth="2" android:fillColor="#00000000" android:pathData="M84,54 L96,54" />
+
+</vector>

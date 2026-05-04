@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="80dp"
+    android:layout_height="80dp">
+
+    <!-- Outer ring -->
+    <View
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_gravity="center"
+        android:background="@drawable/circle_glow_outer" />
+
+    <!-- Inner ring -->
+    <View
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:layout_gravity="center"
+        android:background="@drawable/circle_glow_inner" />
+
+    <!-- Core icon -->
+    <ImageView
+        android:id="@+id/iv_hud_core"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:src="@drawable/ic_arc_reactor"
+        android:contentDescription="JARVIS HUD" />
+
+</FrameLayout>
