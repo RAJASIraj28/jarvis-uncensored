@@ -25,9 +25,16 @@ An advanced, high-performance, and **uncensored** AI assistant for Android. This
 
 ## 📥 Installation
 
+### Download the APK
+You can download the latest pre-built APK directly from the **[Actions Tab](https://github.com/RAJASIraj28/jarvis-uncensored/actions)**:
+1. Go to the latest successful "Android CI Build".
+2. Scroll down to the **Artifacts** section.
+3. Download the `jarvis-uncensored-debug` ZIP and extract the APK.
+
+### Build from Source
 1. **Clone the Repo**:
    ```bash
-   git clone https://github.com/yourusername/jarvis-uncensored.git
+   git clone https://github.com/RAJASIraj28/jarvis-uncensored.git
    ```
 2. **Open in Android Studio**: Use the latest version for best compatibility.
 3. **Build & Run**: Deploy the APK to your device.
