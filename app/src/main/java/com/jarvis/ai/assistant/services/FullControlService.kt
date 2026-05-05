@@ -101,6 +101,7 @@ class FullControlService : AccessibilityService() {
         return "Zoom simulation (back) activated"
     }
     
+    @androidx.annotation.RequiresApi(Build.VERSION_CODES.R)
     fun takeScreenshot(): String {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
             takeScreenshot(Display.DEFAULT_DISPLAY, executor, object : AccessibilityService.TakeScreenshotCallback {
