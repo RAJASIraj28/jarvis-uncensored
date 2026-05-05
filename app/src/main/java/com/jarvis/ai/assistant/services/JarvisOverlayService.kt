@@ -4,7 +4,6 @@ import android.app.Service
 import android.content.Intent
 import android.content.BroadcastReceiver
 import android.content.Context
-import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.PixelFormat
 import android.os.Build
@@ -19,10 +18,6 @@ import android.widget.ImageView
 import com.jarvis.ai.assistant.JarvisApplication
 import com.jarvis.ai.assistant.R
 
-/**
- * Floating HUD Service for JARVIS.
- * Displays a persistent, draggable arc reactor icon on top of all apps.
- */
 class JarvisOverlayService : Service() {
 
     private lateinit var windowManager: WindowManager
@@ -60,10 +55,10 @@ class JarvisOverlayService : Service() {
         windowManager.addView(overlayView, params)
         startPulseAnimation()
         
-        // Register Broadcast Receiver
         val filter = IntentFilter().apply {
             addAction(JarvisVoiceService.ACTION_LISTENING_START)
             addAction(JarvisVoiceService.ACTION_LISTENING_STOP)
+            addAction(JarvisVoiceService.ACTION_VOLUME_LEVEL)
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             registerReceiver(listeningReceiver, filter, Context.RECEIVER_NOT_EXPORTED)
@@ -81,7 +76,15 @@ class JarvisOverlayService : Service() {
                     ivCore.startAnimation(fastPulse)
                 }
                 JarvisVoiceService.ACTION_LISTENING_STOP -> {
+                    ivCore.scaleX = 1.0f
+                    ivCore.scaleY = 1.0f
                     startPulseAnimation()
+                }
+                JarvisVoiceService.ACTION_VOLUME_LEVEL -> {
+                    val volume = intent.getFloatExtra(JarvisVoiceService.EXTRA_VOLUME, 0f)
+                    val scale = 1.0f + (volume / 8000f).coerceIn(0f, 0.5f)
+                    overlayView.scaleX = scale
+                    overlayView.scaleY = scale
                 }
             }
         }
@@ -107,18 +110,14 @@ class JarvisOverlayService : Service() {
                 MotionEvent.ACTION_MOVE -> {
                     val dx = event.rawX - initialTouchX
                     val dy = event.rawY - initialTouchY
-                    if (Math.abs(dx) > 10 || Math.abs(dy) > 10) {
-                        isClick = false
-                    }
+                    if (Math.abs(dx) > 10 || Math.abs(dy) > 10) isClick = false
                     params.x = initialX + dx.toInt()
                     params.y = initialY + dy.toInt()
                     windowManager.updateViewLayout(overlayView, params)
                     true
                 }
                 MotionEvent.ACTION_UP -> {
-                    if (isClick) {
-                        handleOverlayClick()
-                    }
+                    if (isClick) handleOverlayClick()
                     true
                 }
                 else -> false
@@ -128,13 +127,8 @@ class JarvisOverlayService : Service() {
 
     private fun handleOverlayClick() {
         JarvisApplication.instance.speak("Awaiting your command, sir.")
-        // Pulse faster to indicate listening manually if we want
         val intent = Intent(this, JarvisVoiceService::class.java)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(intent)
-        } else {
-            startService(intent)
-        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) startForegroundService(intent) else startService(intent)
     }
 
     private fun startPulseAnimation() {
@@ -143,11 +137,30 @@ class JarvisOverlayService : Service() {
         ivCore.startAnimation(anim)
     }
 
+    private fun checkStealthMode() {
+        val prefs = getSharedPreferences("JarvisPrefs", Context.MODE_PRIVATE)
+        val isStealth = prefs.getBoolean("stealth_mode", false)
+        if (isStealth) {
+            ivCore.setImageResource(android.R.drawable.ic_menu_today)
+            ivCore.alpha = 0.5f
+            ivCore.scaleX = 0.8f
+            ivCore.scaleY = 0.8f
+        } else {
+            ivCore.setImageResource(R.drawable.ic_arc_reactor)
+            ivCore.alpha = 1.0f
+            ivCore.scaleX = 1.0f
+            ivCore.scaleY = 1.0f
+        }
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        checkStealthMode()
+        return super.onStartCommand(intent, flags, startId)
+    }
+
     override fun onDestroy() {
         super.onDestroy()
-        if (::overlayView.isInitialized) {
-            windowManager.removeView(overlayView)
-        }
+        if (::overlayView.isInitialized) windowManager.removeView(overlayView)
         unregisterReceiver(listeningReceiver)
     }
 

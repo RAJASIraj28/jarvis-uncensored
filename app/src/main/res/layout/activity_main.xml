@@ -203,6 +203,24 @@
                     android:orientation="vertical"
                     android:padding="18dp">
 
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/til_api_key"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="OpenRouter API Key"
+                        app:endIconMode="password_toggle"
+                        app:boxStrokeColor="@color/accent_blue"
+                        app:hintTextColor="@color/accent_blue"
+                        android:layout_marginBottom="14dp">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/et_api_key"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textPassword"
+                            android:textColor="@color/text_primary" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -211,6 +229,14 @@
                         android:textSize="11sp"
                         android:textStyle="bold"
                         android:letterSpacing="0.12"
+                        android:layout_marginBottom="14dp" />
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/switch_stealth_mode"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="STEALTH MODE (Disguise HUD)"
+                        android:textColor="@color/text_primary"
                         android:layout_marginBottom="14dp" />
 
                     <Button
