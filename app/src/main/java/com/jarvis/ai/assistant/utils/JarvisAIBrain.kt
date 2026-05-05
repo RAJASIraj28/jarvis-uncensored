@@ -29,7 +29,7 @@ class JarvisAIBrain {
     private var apiUrl: String = "https://openrouter.ai/api/v1/chat/completions"
     private var modelName: String = "google/gemini-flash-1.5"
 
-    private val conversationHistory = mutableListOf<Map<String, String>>()
+    private val conversationHistory = mutableListOf<Map<String, Any>>()
 
     // 🖤 THE SAVAGE SYSTEM PROMPT 🖤
     private val systemPrompt = """
@@ -114,10 +114,8 @@ class JarvisAIBrain {
                 )
                 val newMessages = messages.toMutableList()
                 val index = newMessages.lastIndexOf(lastUserMsg)
-                // Use Any to allow the List content
                 val multimodalMsg = mapOf("role" to "user", "content" to contentList)
-                @Suppress("UNCHECKED_CAST")
-                newMessages[index] = multimodalMsg as Map<String, String>
+                newMessages[index] = multimodalMsg
                 visionFile.delete()
                 newMessages
             } else messages

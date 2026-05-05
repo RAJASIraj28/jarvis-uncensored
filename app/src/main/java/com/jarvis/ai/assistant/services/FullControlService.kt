@@ -13,6 +13,9 @@ import android.provider.Settings
 import android.util.Log
 import java.io.File
 import android.graphics.Bitmap
+import android.graphics.ColorSpace
+import android.hardware.HardwareBuffer
+import android.view.Display
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 
@@ -100,9 +103,9 @@ class FullControlService : AccessibilityService() {
     
     fun takeScreenshot(): String {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
-            takeScreenshot(android.view.Display.DEFAULT_DISPLAY, executor, object : TakeScreenshotCallback {
-                override fun onSuccess(screenshot: ScreenshotResult) {
-                    val bitmap = android.graphics.Bitmap.wrapHardwareBuffer(screenshot.hardwareBuffer, screenshot.colorSpace)
+            takeScreenshot(Display.DEFAULT_DISPLAY, executor, object : AccessibilityService.TakeScreenshotCallback {
+                override fun onSuccess(screenshot: AccessibilityService.ScreenshotResult) {
+                    val bitmap = Bitmap.wrapHardwareBuffer(screenshot.hardwareBuffer, screenshot.colorSpace)
                     if (bitmap != null) {
                         saveScreenshotToTemp(bitmap)
                     }
@@ -111,10 +114,10 @@ class FullControlService : AccessibilityService() {
                     Log.e("JarvisControl", "Screenshot failed: $errorCode")
                 }
             })
-            return "Taking high-res screenshot for analysis, sir."
+            return "Analyzing screen state, sir."
         } else {
             performGlobalAction(GLOBAL_ACTION_TAKE_SCREENSHOT)
-            return "Screenshot captured via legacy system."
+            return "Captured via legacy buffer."
         }
     }
 
