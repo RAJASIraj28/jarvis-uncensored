@@ -10,6 +10,9 @@ import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
+import android.util.Log
+import java.io.File
+import android.graphics.Bitmap
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 
@@ -96,8 +99,38 @@ class FullControlService : AccessibilityService() {
     }
     
     fun takeScreenshot(): String {
-        performGlobalAction(GLOBAL_ACTION_TAKE_SCREENSHOT)
-        return "Screenshot captured"
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+            takeScreenshot(android.view.Display.DEFAULT_DISPLAY, executor, object : TakeScreenshotCallback {
+                override fun onSuccess(screenshot: ScreenshotResult) {
+                    val bitmap = android.graphics.Bitmap.wrapHardwareBuffer(screenshot.hardwareBuffer, screenshot.colorSpace)
+                    if (bitmap != null) {
+                        saveScreenshotToTemp(bitmap)
+                    }
+                }
+                override fun onFailure(errorCode: Int) {
+                    Log.e("JarvisControl", "Screenshot failed: $errorCode")
+                }
+            })
+            return "Taking high-res screenshot for analysis, sir."
+        } else {
+            performGlobalAction(GLOBAL_ACTION_TAKE_SCREENSHOT)
+            return "Screenshot captured via legacy system."
+        }
+    }
+
+    private val executor = java.util.concurrent.Executors.newSingleThreadExecutor()
+
+    private fun saveScreenshotToTemp(bitmap: android.graphics.Bitmap) {
+        try {
+            val file = File(getExternalFilesDir(null), "jarvis_vision.jpg")
+            val out = java.io.FileOutputStream(file)
+            bitmap.compress(android.graphics.Bitmap.CompressFormat.JPEG, 80, out)
+            out.flush()
+            out.close()
+            Log.d("JarvisControl", "Vision frame saved to ${file.absolutePath}")
+        } catch (e: Exception) {
+            Log.e("JarvisControl", "Failed to save vision frame", e)
+        }
     }
     
     fun takePhoto(): String {

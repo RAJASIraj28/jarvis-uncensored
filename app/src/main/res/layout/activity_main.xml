@@ -16,9 +16,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingHorizontal="20dp"
-            android:paddingTop="48dp"
-            android:paddingBottom="100dp">
+            android:paddingHorizontal="24dp"
+            android:paddingTop="56dp"
+            android:paddingBottom="120dp"
+            android:background="@drawable/glass_gradient_bg">
 
             <!-- ── HEADER ── -->
             <LinearLayout

@@ -47,6 +47,7 @@ class JarvisAIBrain {
         - [BRIGHTNESS: 0-100] - Set screen brightness.
         - [SCREENSHOT] - Take a screenshot and analyze it (Vision).
         - [SEARCH: query] - Search the web for info.
+        - [READ: url] - Read the full text content of a webpage.
         
         Keep your spoken responses concise and badass.
     """.trimIndent()
@@ -99,9 +100,32 @@ class JarvisAIBrain {
     }
 
     private suspend fun callLLM(): String {
+        val messages = conversationHistory.toMutableList()
+        
+        // 👁️ VISION PROCESSING 👁️
+        val visionFile = File(JarvisApplication.instance.getExternalFilesDir(null), "jarvis_vision.jpg")
+        val processedMessages = if (visionFile.exists()) {
+            val base64Image = encodeImageToBase64(visionFile)
+            val lastUserMsg = messages.lastOrNull { it["role"] == "user" }
+            if (lastUserMsg != null) {
+                val contentList = listOf(
+                    mapOf("type" to "text", "text" to lastUserMsg["content"]),
+                    mapOf("type" to "image_url", "image_url" to mapOf("url" to "data:image/jpeg;base64,$base64Image"))
+                )
+                val newMessages = messages.toMutableList()
+                val index = newMessages.lastIndexOf(lastUserMsg)
+                // Use Any to allow the List content
+                val multimodalMsg = mapOf("role" to "user", "content" to contentList)
+                @Suppress("UNCHECKED_CAST")
+                newMessages[index] = multimodalMsg as Map<String, String>
+                visionFile.delete()
+                newMessages
+            } else messages
+        } else messages
+
         val requestBody = mapOf(
             "model" to modelName,
-            "messages" to conversationHistory,
+            "messages" to processedMessages,
             "temperature" to 0.9
         )
 
@@ -145,6 +169,16 @@ class JarvisAIBrain {
             volume?.let { controlService?.setVolume("media", it) }
         }
 
+        if (rawResponse.contains("[READ:")) {
+            val url = rawResponse.substringAfter("[READ:").substringBefore("]").trim()
+            onResponse("Reading $url for you, sir...")
+            CoroutineScope(Dispatchers.IO).launch {
+                val content = scrapeWebPage(url)
+                processCommand("CONTENT OF $url: $content", null, null, onResponse)
+            }
+            return
+        }
+
         if (rawResponse.contains("[SEARCH:")) {
             val query = rawResponse.substringAfter("[SEARCH:").substringBefore("]").trim()
             val intent = android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse("https://www.google.com/search?q=$query"))
@@ -157,5 +191,19 @@ class JarvisAIBrain {
         conversationHistory.add(mapOf("role" to "assistant", "content" to rawResponse))
         
         onResponse(if (ttsResponse.isEmpty()) "Done, boss." else ttsResponse)
+    }
+
+    private fun encodeImageToBase64(file: File): String {
+        val bytes = file.readBytes()
+        return android.util.Base64.encodeToString(bytes, android.util.Base64.NO_WRAP)
+    }
+
+    private fun scrapeWebPage(url: String): String {
+        return try {
+            val doc = org.jsoup.Jsoup.connect(url).get()
+            doc.body().text().take(5000) // Limit to 5k chars for LLM context
+        } catch (e: Exception) {
+            "Error reading page: ${e.message}"
+        }
     }
 }
