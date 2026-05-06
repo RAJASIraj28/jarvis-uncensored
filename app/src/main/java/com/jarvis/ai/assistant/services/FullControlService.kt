@@ -194,7 +194,15 @@ class FullControlService : AccessibilityService() {
                 click(coords.first, coords.second)
             }
             normalized.contains("zoom") -> zoomIn()
-            normalized.contains("screenshot") -> takeScreenshot()
+            normalized.contains("screenshot") -> {
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+                    takeScreenshot()
+                    "Analyzing screen, sir."
+                } else {
+                    performGlobalAction(GLOBAL_ACTION_TAKE_SCREENSHOT)
+                    "Screenshot captured via legacy method."
+                }
+            }
             normalized.contains("photo") -> takePhoto()
             normalized.contains("scroll") -> scrollDown()
             normalized.contains("swipe") -> {

@@ -25,7 +25,7 @@ class JarvisAIBrain {
         .readTimeout(30, TimeUnit.SECONDS)
         .build()
 
-    private var apiKey: String = "sk-or" + "-v1-32bea06eaf89" + "fce1dfb259c7803" + "4b1fd812d1b96947" + "f74c53bbea5939446b7a7"
+    private var apiKey: String = ""   // Loaded from SharedPreferences via loadApiKey()
     private var apiUrl: String = "https://openrouter.ai/api/v1/chat/completions"
     private var modelName: String = "google/gemini-flash-1.5"
 
@@ -58,7 +58,7 @@ class JarvisAIBrain {
 
     fun initialize(service: JarvisAccessibilityService?) {
         loadApiKey()
-        JarvisApplication.instance.speak("🖤 JARVIS Intelligence Core online. Uncensored and ready for havoc.")
+        JarvisApplication.instance.speak("JARVIS Intelligence Core online. Uncensored and ready.")
     }
 
     private fun loadApiKey() {
