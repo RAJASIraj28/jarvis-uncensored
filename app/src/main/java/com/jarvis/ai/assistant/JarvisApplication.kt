@@ -37,13 +37,16 @@ class JarvisApplication : Application() {
 
     /** Centralised speak — safe to call from any thread/class */
     fun speak(text: String, queueMode: Int = TextToSpeech.QUEUE_FLUSH) {
-        if (isTtsReady) {
+        if (isTtsReady && ::tts.isInitialized) {
             tts.speak(text, queueMode, null, "jarvis_${System.currentTimeMillis()}")
+        } else {
+            // Optional: log warning – TTS not ready
+            android.util.Log.w("JarvisApplication", "Attempted to speak before TTS initialized")
         }
     }
 
     override fun onTerminate() {
-        if (isTtsReady) { tts.stop(); tts.shutdown() }
+        if (::tts.isInitialized) { tts.stop(); tts.shutdown() }
         super.onTerminate()
     }
 }
