@@ -1,6 +1,7 @@
 package com.jarvis.ai.assistant
 
 import android.Manifest
+import android.content.Intent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -168,35 +169,60 @@ class MainActivity : AppCompatActivity() {
         binding.btnStartListening.setOnClickListener {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
                 startForegroundService(Intent(this, JarvisVoiceService::class.java))
-                JarvisApplication.instance.speak("JARVIS online. Listening mode active.")
-                addLog("Voice Service Started.")
+                JarvisApplication.instance.speak(
+                    "JARVIS always-listening service started. I'm ready, sir."
+                )
+                addLog("Always-listening started.")
             } else {
                 requestPermissionsIfNeeded()
             }
         }
 
+        // Enable accessibility
         binding.btnEnableAccessibility.setOnClickListener {
+            JarvisApplication.instance.speak(
+                "Please enable JARVIS in Accessibility Settings to unlock full phone control, sir."
+            )
             startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
         }
 
+        // Overlay permission
         binding.btnOverlayPermission.setOnClickListener {
             if (!Settings.canDrawOverlays(this)) {
                 startActivityForResult(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName")), RC_OVERLAY)
             }
         }
 
+        // Test TTS
         binding.btnTestVoice.setOnClickListener {
-            JarvisApplication.instance.speak("Status check complete. All sub-routines performing within normal parameters.")
+            val time = SimpleDateFormat("hh:mm a", Locale.US).format(Date())
+            JarvisApplication.instance.speak(
+                "JARVIS online. All systems nominal. The time is $time. How may I assist you, sir?"
+            )
+            addLog("Voice test at $time.")
         }
 
+        // FAB manual trigger
         binding.fabMic.setOnClickListener {
-            startForegroundService(Intent(this, JarvisVoiceService::class.java))
+            JarvisApplication.instance.speak("JARVIS listening. Speak your command, sir.")
+            addLog("Manual listen triggered.")
         }
 
+        // Grant Advanced Permissions
         binding.btnGrantPermissions.setOnClickListener {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.System.canWrite(this)) {
-                startActivity(Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS).apply { data = Uri.parse("package:$packageName") })
+            // Brightness control permission
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (!Settings.System.canWrite(this)) {
+                    val intent = Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
+                    intent.data = Uri.parse("package:$packageName")
+                    startActivity(intent)
             }
+            }
+            
+            // All other permissions (Accessibility)
+            startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
+            
+            // Camera/Audio permissions
             requestPermissionsIfNeeded()
         }
     }
