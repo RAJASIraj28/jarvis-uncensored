@@ -9,9 +9,19 @@ class JarvisApplication : Application() {
     companion object {
         lateinit var instance: JarvisApplication
             private set
+
         lateinit var tts: TextToSpeech
             private set
+
+        /** True once TextToSpeech engine is successfully initialised */
         var isTtsReady = false
+            private set
+
+        /**
+         * True once the [tts] object has been created (even before the engine
+         * reports SUCCESS).  Used to guard [stop]/[shutdown] in onTerminate().
+         */
+        var isTtsCreated = false
             private set
     }
 
@@ -33,20 +43,28 @@ class JarvisApplication : Application() {
                 }
             }
         }
+        // Mark as created right after construction
+        isTtsCreated = true
     }
 
     /** Centralised speak — safe to call from any thread/class */
     fun speak(text: String, queueMode: Int = TextToSpeech.QUEUE_FLUSH) {
-        if (isTtsReady && ::tts.isInitialized) {
+        // isTtsReady is only true AFTER the engine has confirmed SUCCESS
+        // so it already implies that tts has been created and configured.
+        if (isTtsReady) {
             tts.speak(text, queueMode, null, "jarvis_${System.currentTimeMillis()}")
         } else {
-            // Optional: log warning – TTS not ready
-            android.util.Log.w("JarvisApplication", "Attempted to speak before TTS initialized")
+            android.util.Log.w("JarvisApplication", "speak() called before TTS ready: $text")
         }
     }
 
     override fun onTerminate() {
-        if (::tts.isInitialized) { tts.stop(); tts.shutdown() }
+        // Use the creation flag — avoids accessing the backing field of a
+        // companion-object lateinit var, which the Kotlin compiler forbids.
+        if (isTtsCreated) {
+            tts.stop()
+            tts.shutdown()
+        }
         super.onTerminate()
     }
 }
