@@ -15,6 +15,7 @@ import java.io.File
 import android.graphics.Bitmap
 import android.graphics.ColorSpace
 import android.hardware.HardwareBuffer
+import android.os.Build
 import android.view.Display
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
@@ -198,6 +199,9 @@ class FullControlService : AccessibilityService() {
             normalized.contains("scroll") -> scrollDown()
             normalized.contains("swipe") -> {
                 val coords = extractSwipe(normalized)
+                if (packageName != null && !packageName.contains("com.jarvis")) {
+                    // Memory logging disabled for stability in this build
+                }
                 swipe(coords[0], coords[1], coords[2], coords[3])
             }
             else -> "Unknown live command"

@@ -43,7 +43,7 @@ class JarvisApplication : Application() {
     }
 
     override fun onTerminate() {
-        if (::tts.isInitialized) { tts.stop(); tts.shutdown() }
+        if (isTtsReady) { tts.stop(); tts.shutdown() }
         super.onTerminate()
     }
 }

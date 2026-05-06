@@ -36,7 +36,6 @@ class JarvisAccessibilityService : AccessibilityService() {
             !packageName.contains("jarvis") &&
             !packageName.contains("systemui")) {
             reactToAppChange(packageName)
-            aiBrain.saveMemory("current_app", packageName)
             lastApp = packageName
         }
 
