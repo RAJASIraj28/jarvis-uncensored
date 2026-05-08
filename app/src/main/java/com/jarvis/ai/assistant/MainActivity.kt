@@ -215,7 +215,15 @@ class MainActivity : AppCompatActivity() {
                     val intent = Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
                     intent.data = Uri.parse("package:$packageName")
                     startActivity(intent)
-            }
+                }
+                
+                // Battery optimization exception to keep service alive
+                val pm = getSystemService(Context.POWER_SERVICE) as android.os.PowerManager
+                if (!pm.isIgnoringBatteryOptimizations(packageName)) {
+                    val batteryIntent = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
+                    batteryIntent.data = Uri.parse("package:$packageName")
+                    startActivity(batteryIntent)
+                }
             }
             
             // All other permissions (Accessibility)
