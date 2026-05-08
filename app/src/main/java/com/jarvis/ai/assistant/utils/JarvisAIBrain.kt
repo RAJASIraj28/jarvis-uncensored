@@ -46,6 +46,10 @@ class JarvisAIBrain {
         - [VOLUME: 0-100] - Set system volume.
         - [BRIGHTNESS: 0-100] - Set screen brightness.
         - [SCREENSHOT] - Take a screenshot and analyze it (Vision).
+        - [OPEN: app_name] - Launch a specific application.
+        - [WIFI_ON] / [WIFI_OFF] - Toggle WiFi.
+        - [BT_ON] / [BT_OFF] - Toggle Bluetooth.
+        - [VIBRATE] - Trigger haptic feedback.
         - [SEARCH: query] - Search the web for info.
         - [READ: url] - Read the full text content of a webpage.
         
@@ -150,11 +154,26 @@ class JarvisAIBrain {
         var processedResponse = rawResponse
         val controlService = FullControlService.instance
 
-        // 🛠️ TOOL PARSING 🛠️
+        // 🔥 ADVANCED TOOL PARSING 🔥
         if (rawResponse.contains("[SCREENSHOT]")) {
-            onResponse("Analyzing your screen right now... give me a sec.")
+            onResponse("Capturing and analyzing screen data now, sir...")
             controlService?.takeScreenshot()
+            // Brain will see the file in the next turn or if we re-trigger here
             return
+        }
+
+        if (rawResponse.contains("[VIBRATE]")) {
+            controlService?.vibrate(500L)
+        }
+
+        if (rawResponse.contains("[WIFI_ON]")) controlService?.toggleWifi(true)
+        if (rawResponse.contains("[WIFI_OFF]")) controlService?.toggleWifi(false)
+        if (rawResponse.contains("[BT_ON]")) controlService?.toggleBluetooth(true)
+        if (rawResponse.contains("[BT_OFF]")) controlService?.toggleBluetooth(false)
+
+        if (rawResponse.contains("[OPEN:")) {
+            val app = rawResponse.substringAfter("[OPEN:").substringBefore("]").trim()
+            controlService?.openApp(app)
         }
 
         if (rawResponse.contains("[BRIGHTNESS:")) {
@@ -169,10 +188,10 @@ class JarvisAIBrain {
 
         if (rawResponse.contains("[READ:")) {
             val url = rawResponse.substringAfter("[READ:").substringBefore("]").trim()
-            onResponse("Reading $url for you, sir...")
+            onResponse("Extracting intelligence from $url, sir...")
             CoroutineScope(Dispatchers.IO).launch {
                 val content = scrapeWebPage(url)
-                processCommand("CONTENT OF $url: $content", null, null, onResponse)
+                processCommand("RAW CONTENT OF $url: $content", null, null, onResponse)
             }
             return
         }
@@ -188,7 +207,7 @@ class JarvisAIBrain {
         val ttsResponse = rawResponse.replace(Regex("\\[.*?\\]"), "").trim()
         conversationHistory.add(mapOf("role" to "assistant", "content" to rawResponse))
         
-        onResponse(if (ttsResponse.isEmpty()) "Done, boss." else ttsResponse)
+        onResponse(if (ttsResponse.isEmpty()) "Action completed, sir." else ttsResponse)
     }
 
     private fun encodeImageToBase64(file: File): String {

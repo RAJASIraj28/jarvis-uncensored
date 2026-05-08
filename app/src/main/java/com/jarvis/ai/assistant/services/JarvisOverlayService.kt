@@ -96,6 +96,7 @@ class JarvisOverlayService : Service() {
         var initialTouchX = 0f
         var initialTouchY = 0f
         var isClick = false
+        var startTime = 0L
 
         overlayView.setOnTouchListener { view, event ->
             when (event.action) {
@@ -105,6 +106,7 @@ class JarvisOverlayService : Service() {
                     initialTouchX = event.rawX
                     initialTouchY = event.rawY
                     isClick = true
+                    startTime = System.currentTimeMillis()
                     true
                 }
                 MotionEvent.ACTION_MOVE -> {
@@ -117,7 +119,14 @@ class JarvisOverlayService : Service() {
                     true
                 }
                 MotionEvent.ACTION_UP -> {
-                    if (isClick) handleOverlayClick()
+                    val duration = System.currentTimeMillis() - startTime
+                    if (isClick) {
+                        if (duration > 800) {
+                            handleOverlayLongClick()
+                        } else {
+                            handleOverlayClick()
+                        }
+                    }
                     true
                 }
                 else -> false
@@ -126,9 +135,19 @@ class JarvisOverlayService : Service() {
     }
 
     private fun handleOverlayClick() {
-        JarvisApplication.instance.speak("Awaiting your command, sir.")
-        val intent = Intent(this, JarvisVoiceService::class.java)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) startForegroundService(intent) else startService(intent)
+        val voiceSvc = JarvisVoiceService.instance
+        if (voiceSvc != null) {
+            JarvisApplication.instance.speak("Ready sir.")
+        } else {
+            val intent = Intent(this, JarvisVoiceService::class.java)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) startForegroundService(intent) else startService(intent)
+        }
+    }
+
+    private fun handleOverlayLongClick() {
+        JarvisApplication.instance.speak("Scanning screen for analysis, sir.")
+        FullControlService.instance?.takeScreenshot()
+        // The brain will pick it up on the next command or we could trigger a vision analysis here
     }
 
     private fun startPulseAnimation() {
