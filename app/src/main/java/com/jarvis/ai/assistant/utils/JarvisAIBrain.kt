@@ -8,6 +8,8 @@ import com.jarvis.ai.assistant.services.FullControlService
 import com.jarvis.ai.assistant.services.JarvisAccessibilityService
 import kotlinx.coroutines.*
 import okhttp3.*
+import com.jarvis.ai.assistant.data.JarvisDatabase
+import com.jarvis.ai.assistant.data.MemoryEntity
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
@@ -52,6 +54,7 @@ class JarvisAIBrain {
         - [VIBRATE] - Trigger haptic feedback.
         - [SEARCH: query] - Search the web for info.
         - [READ: url] - Read the full text content of a webpage.
+        - [MEMORY: key, value] - Store a persistent piece of information for later.
         
         Keep your spoken responses concise and badass.
     """.trimIndent()
@@ -194,6 +197,16 @@ class JarvisAIBrain {
                 processCommand("RAW CONTENT OF $url: $content", null, null, onResponse)
             }
             return
+        }
+
+        if (rawResponse.contains("[MEMORY:")) {
+            val part = rawResponse.substringAfter("[MEMORY:").substringBefore("]").trim()
+            val key = part.substringBefore(",").trim()
+            val value = part.substringAfter(",").trim()
+            CoroutineScope(Dispatchers.IO).launch {
+                val db = JarvisDatabase.getDatabase(JarvisApplication.instance)
+                db.memoryDao().insertMemory(MemoryEntity(key = key, value = value))
+            }
         }
 
         if (rawResponse.contains("[SEARCH:")) {
