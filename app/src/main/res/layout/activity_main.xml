@@ -222,6 +222,17 @@
                             android:textColor="@color/text_primary" />
                     </com.google.android.material.textfield.TextInputLayout>
 
+                    <Button
+                        android:id="@+id/btn_verify_identity"
+                        android:layout_width="match_parent"
+                        android:layout_height="54dp"
+                        android:text="🔒  VERIFY BIOMETRIC IDENTITY"
+                        android:textColor="@android:color/white"
+                        android:textStyle="bold"
+                        android:backgroundTint="@color/accent_blue"
+                        android:layout_marginBottom="14dp"
+                        android:stateListAnimator="@null" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

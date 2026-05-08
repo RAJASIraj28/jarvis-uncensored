@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        showBiometricPrompt()
+        // showBiometricPrompt() // Moved to user demand
         refreshStatus()
         setupButtons()
         setupSettings()
@@ -209,6 +209,11 @@ class MainActivity : AppCompatActivity() {
         binding.fabMic.setOnClickListener {
             JarvisApplication.instance.speak("JARVIS listening. Speak your command, sir.")
             addLog("Manual listen triggered.")
+        }
+
+        // Biometric Verify
+        binding.btnVerifyIdentity.setOnClickListener {
+            showBiometricPrompt()
         }
 
         // Grant Advanced Permissions
