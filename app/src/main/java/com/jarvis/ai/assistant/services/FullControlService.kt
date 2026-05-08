@@ -11,6 +11,12 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
 import android.util.Log
+import android.telephony.SmsManager
+import android.net.wifi.WifiManager
+import android.bluetooth.BluetoothAdapter
+import android.os.Vibrator
+import android.content.pm.ApplicationInfo
+import android.content.pm.PackageManager
 import java.io.File
 import android.graphics.Bitmap
 import android.graphics.ColorSpace
@@ -171,6 +177,69 @@ class FullControlService : AccessibilityService() {
         }
         return null
     }
+
+    fun sendSms(number: String, message: String): String {
+        return try {
+            val smsManager = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                getSystemService(SmsManager::class.java)
+            } else {
+                SmsManager.getDefault()
+            }
+            smsManager.sendTextMessage(number, null, message, null, null)
+            "SMS sent to $number"
+        } catch (e: Exception) {
+            "Failed to send SMS: ${e.message}"
+        }
+    }
+
+    fun toggleWifi(enable: Boolean): String {
+        return try {
+            val wifiManager = getSystemService(Context.WIFI_SERVICE) as WifiManager
+            @Suppress("DEPRECATION")
+            wifiManager.isWifiEnabled = enable
+            "WiFi ${if (enable) "enabled" else "disabled"}"
+        } catch (e: Exception) {
+            // Fallback for Android 10+
+            val intent = Intent(Settings.ACTION_WIFI_SETTINGS).apply { addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) }
+            startActivity(intent)
+            "Opening WiFi settings, sir."
+        }
+    }
+
+    fun toggleBluetooth(enable: Boolean): String {
+        return try {
+            val adapter = BluetoothAdapter.getDefaultAdapter()
+            if (enable) adapter.enable() else adapter.disable()
+            "Bluetooth ${if (enable) "enabled" else "disabled"}"
+        } catch (e: Exception) {
+            val intent = Intent(Settings.ACTION_BLUETOOTH_SETTINGS).apply { addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) }
+            startActivity(intent)
+            "Opening Bluetooth settings, sir."
+        }
+    }
+
+    fun vibrate(ms: Long): String {
+        val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        vibrator.vibrate(ms)
+        return "Vibrating for $ms ms"
+    }
+
+    fun openApp(name: String): String {
+        val pm = packageManager
+        val packages = pm.getInstalledApplications(PackageManager.GET_META_DATA)
+        for (app in packages) {
+            val label = pm.getApplicationLabel(app).toString().lowercase()
+            if (label.contains(name.lowercase())) {
+                val intent = pm.getLaunchIntentForPackage(app.packageName)
+                if (intent != null) {
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    startActivity(intent)
+                    return "Opening $label, sir."
+                }
+            }
+        }
+        return "Could not find app named $name"
+    }
     
     fun liveCommand(command: String): String {
         val normalized = command.lowercase()
@@ -207,10 +276,25 @@ class FullControlService : AccessibilityService() {
             normalized.contains("scroll") -> scrollDown()
             normalized.contains("swipe") -> {
                 val coords = extractSwipe(normalized)
-                if (packageName != null && !packageName.contains("com.jarvis")) {
-                    // Memory logging disabled for stability in this build
-                }
                 swipe(coords[0], coords[1], coords[2], coords[3])
+            }
+            normalized.contains("sms") -> {
+                val num = Regex("\\d+").find(normalized)?.value ?: "unknown"
+                val msg = normalized.substringAfter("sms").substringAfter("to").substringAfter("saying").trim()
+                sendSms(num, if (msg.isNotEmpty()) msg else "Hello from JARVIS")
+            }
+            normalized.contains("wifi") -> {
+                toggleWifi(!normalized.contains("off"))
+            }
+            normalized.contains("bluetooth") -> {
+                toggleBluetooth(!normalized.contains("off"))
+            }
+            normalized.contains("vibrate") -> {
+                vibrate(500L)
+            }
+            normalized.contains("open") -> {
+                val appName = normalized.substringAfter("open").trim()
+                openApp(appName)
             }
             else -> "Unknown live command"
         }
