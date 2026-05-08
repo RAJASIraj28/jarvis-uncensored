@@ -230,6 +230,11 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             
+            // Overlay Permission
+            if (!Settings.canDrawOverlays(this)) {
+                startActivity(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName")))
+            }
+
             // All other permissions (Accessibility)
             startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
             
@@ -263,9 +268,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun isAccessibilityEnabled(): Boolean {
-        val name = "$packageName/.services.JarvisAccessibilityService"
         val enabled = Settings.Secure.getString(contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES) ?: return false
-        return enabled.split(":").any { it.equals(name, ignoreCase = true) }
+        val hasMain = enabled.split(":").any { it.equals("$packageName/.services.JarvisAccessibilityService", ignoreCase = true) }
+        val hasControl = enabled.split(":").any { it.equals("$packageName/.services.FullControlService", ignoreCase = true) }
+        return hasMain || hasControl
     }
 
     private fun requestPermissionsIfNeeded() {

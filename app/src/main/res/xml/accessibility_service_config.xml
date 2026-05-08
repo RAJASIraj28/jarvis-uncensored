@@ -5,6 +5,7 @@
     android:accessibilityFlags="flagDefault|flagRetrieveInteractiveWindows|flagReportViewIds"
     android:canRetrieveWindowContent="true"
     android:canPerformGestures="true"
+    android:canTakeScreenshot="true"
     android:description="@string/jarvis_description"
     android:notificationTimeout="100"
     android:settingsActivity="com.jarvis.ai.assistant.MainActivity" />
