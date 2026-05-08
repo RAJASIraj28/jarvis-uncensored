@@ -29,11 +29,25 @@ class MainActivity : AppCompatActivity() {
     companion object {
         private const val RC_AUDIO   = 101
         private const val RC_OVERLAY = 102
-        private val RUNTIME_PERMISSIONS = arrayOf(
+        private val RUNTIME_PERMISSIONS = mutableListOf(
             Manifest.permission.RECORD_AUDIO,
             Manifest.permission.CALL_PHONE,
-            Manifest.permission.CAMERA
-        )
+            Manifest.permission.CAMERA,
+            Manifest.permission.READ_CONTACTS,
+            Manifest.permission.READ_PHONE_STATE,
+            Manifest.permission.SEND_SMS,
+            Manifest.permission.READ_SMS,
+            Manifest.permission.READ_CALENDAR,
+            Manifest.permission.WRITE_CALENDAR,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ).apply {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                add(Manifest.permission.ANSWER_PHONE_CALLS)
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                add(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }.toTypedArray()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -243,7 +257,12 @@ class MainActivity : AppCompatActivity() {
             // All other permissions (Accessibility)
             startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
             
-            // Camera/Audio permissions
+            // Notification Listener Permission
+            try {
+                startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS))
+            } catch (e: Exception) {}
+            
+            // Camera/Audio/SMS/etc permissions
             requestPermissionsIfNeeded()
         }
     }
