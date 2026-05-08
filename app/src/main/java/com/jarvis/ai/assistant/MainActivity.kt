@@ -63,12 +63,22 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showBiometricPrompt() {
+        val biometricManager = androidx.biometric.BiometricManager.from(this)
+        if (biometricManager.canAuthenticate(androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_WEAK) != androidx.biometric.BiometricManager.BIOMETRIC_SUCCESS) {
+            addLog("Biometric security unavailable. Proceeding without auth.")
+            return
+        }
+
         val executor = ContextCompat.getMainExecutor(this)
         val biometricPrompt = BiometricPrompt(this, executor,
             object : BiometricPrompt.AuthenticationCallback() {
                 override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
                     super.onAuthenticationError(errorCode, errString)
-                    finish() // Close app if security fails
+                    if (errorCode == BiometricPrompt.ERROR_USER_CANCELED || errorCode == BiometricPrompt.ERROR_NEGATIVE_BUTTON) {
+                        finish() // Close app only if user explicitly cancels
+                    } else {
+                        Toast.makeText(this@MainActivity, "Biometric Error: $errString", Toast.LENGTH_SHORT).show()
+                    }
                 }
                 override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                     super.onAuthenticationSucceeded(result)
