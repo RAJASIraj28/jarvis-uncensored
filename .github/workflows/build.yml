@@ -47,12 +47,14 @@ jobs:
         with:
           name: jarvis-uncensored-debug
           path: ./release-artifacts
+      - name: Rename APK
+        run: mv ./release-artifacts/app-debug.apk ./release-artifacts/JARVIS-Assistant.apk
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
-          files: ./release-artifacts/app-debug.apk
-          name: JARVIS Uncensored v3.2
+          files: ./release-artifacts/JARVIS-Assistant.apk
+          name: JARVIS Uncensored Release
           tag_name: ${{ github.ref_name }}
-          body: "Official JARVIS Uncensored v3.2 Stable Build. Includes Uncensored Brain, Biometrics, and Vision Analysis."
+          body: "Official JARVIS Uncensored Stable Build. Includes Uncensored Brain, Biometrics, and Vision Analysis."
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
