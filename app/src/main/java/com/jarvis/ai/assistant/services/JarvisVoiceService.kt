@@ -185,6 +185,23 @@ class JarvisVoiceService : Service(), RecognitionListener {
         sendBroadcast(bIntent)
 
         val accessSvc = JarvisAccessibilityService.instance
+
+        // Handle device control directly if it matches control keywords
+        val controlKeywords = listOf("brightness", "volume", "type", "click", "zoom", "screenshot", "photo", "swipe", "scroll")
+        if (controlKeywords.any { command.lowercase().contains(it) }) {
+            val controlSvc = FullControlService.instance
+            if (controlSvc != null) {
+                val response = controlSvc.liveCommand(command)
+                JarvisApplication.instance.speak(response)
+                restartSpeechRecognition(1000)
+                return
+            } else {
+                JarvisApplication.instance.speak("Control service offline.")
+                restartSpeechRecognition(1000)
+                return
+            }
+        }
+
         aiBrain.processCommand(command.lowercase(), accessSvc, this) { response ->
             JarvisApplication.instance.speak(response)
             handler.postDelayed({
