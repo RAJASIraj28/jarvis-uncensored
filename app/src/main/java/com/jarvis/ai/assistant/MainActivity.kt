@@ -9,6 +9,8 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.provider.Settings
 import android.view.animation.AnimationUtils
 import android.widget.Toast
@@ -19,12 +21,15 @@ import androidx.core.content.ContextCompat
 import com.jarvis.ai.assistant.databinding.ActivityMainBinding
 import com.jarvis.ai.assistant.services.JarvisOverlayService
 import com.jarvis.ai.assistant.services.JarvisVoiceService
+import com.jarvis.ai.assistant.utils.DeviceStatsManager
 import java.text.SimpleDateFormat
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var deviceManager: DeviceStatsManager
+    private val statsHandler = Handler(Looper.getMainLooper())
 
     companion object {
         private const val RC_AUDIO   = 101
@@ -56,10 +61,12 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // showBiometricPrompt() // Moved to user demand
+        deviceManager = DeviceStatsManager(this)
         refreshStatus()
         setupButtons()
         setupSettings()
         startPulse()
+        startStatsUpdateLoop()
         requestPermissionsIfNeeded()
     }
 
@@ -306,6 +313,36 @@ class MainActivity : AppCompatActivity() {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == RC_AUDIO) refreshStatus()
+    }
+
+    private fun startStatsUpdateLoop() {
+        val runnable = object : Runnable {
+            override fun run() {
+                updateDeviceStats()
+                statsHandler.postDelayed(this, 5000)
+            }
+        }
+        statsHandler.post(runnable)
+    }
+
+    private fun updateDeviceStats() {
+        val ram = deviceManager.getRamUsage()
+        binding.tvRamVal.text = deviceManager.getFormattedRam()
+        binding.pbRam.max = ram.second.toInt()
+        binding.pbRam.progress = ram.first.toInt()
+
+        val storage = deviceManager.getStorageUsage()
+        binding.tvStorageVal.text = deviceManager.getFormattedStorage()
+        binding.pbStorage.max = storage.second.toInt()
+        binding.pbStorage.progress = storage.first.toInt()
+
+        binding.tvBatteryVal.text = "${deviceManager.getBatteryLevel()}%"
+        binding.tvCpuTemp.text = deviceManager.getCpuTemp()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        statsHandler.removeCallbacksAndMessages(null)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
