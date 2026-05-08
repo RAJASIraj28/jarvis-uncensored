@@ -12,6 +12,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
+import android.util.Log
 import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -181,6 +182,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun safeGetColor(colorResId: Int): Int {
+        return ContextCompat.getColor(this, colorResId)
+    }
+
     private var lastFinalLogs = "System initialized. Awaiting commands..."
 
     private fun checkAndStartOverlay() {
@@ -285,11 +290,13 @@ class MainActivity : AppCompatActivity() {
         binding.statusService.setImageResource(if (svcOk) R.drawable.ic_check else R.drawable.ic_warning)
 
         binding.tvSystemStatus.text = if (accessOk && micOk && svcOk) "ALL SYSTEMS OPERATIONAL" else "SETUP REQUIRED"
-        binding.tvSystemStatus.setTextColor(getColor(if (accessOk && micOk && svcOk) R.color.accent_green else R.color.status_warning))
+        binding.tvSystemStatus.setTextColor(safeGetColor(if (accessOk && micOk && svcOk) R.color.accent_green else R.color.status_warning))
     }
 
     private fun startPulse() {
-        binding.ivJarvisCore.startAnimation(AnimationUtils.loadAnimation(this, R.anim.pulse))
+        try {
+            binding.ivJarvisCore.startAnimation(AnimationUtils.loadAnimation(this, R.anim.pulse))
+        } catch (e: Exception) {}
     }
 
     private fun addLog(entry: String) {
@@ -318,26 +325,36 @@ class MainActivity : AppCompatActivity() {
     private fun startStatsUpdateLoop() {
         val runnable = object : Runnable {
             override fun run() {
-                updateDeviceStats()
+                try {
+                    updateDeviceStats()
+                } catch (e: Exception) {
+                    Log.e("JarvisUI", "Stats update failed", e)
+                }
                 statsHandler.postDelayed(this, 5000)
             }
         }
-        statsHandler.post(runnable)
+        statsHandler.postDelayed(runnable, 1000) // 1 second delay for first run
     }
 
     private fun updateDeviceStats() {
-        val ram = deviceManager.getRamUsage()
-        binding.tvRamVal.text = deviceManager.getFormattedRam()
-        binding.pbRam.max = ram.second.toInt()
-        binding.pbRam.progress = ram.first.toInt()
+        if (!::binding.isInitialized) return
+        
+        try {
+            val ram = deviceManager.getRamUsage()
+            binding.tvRamVal.text = deviceManager.getFormattedRam()
+            binding.pbRam.max = ram.second.toInt()
+            binding.pbRam.progress = ram.first.toInt()
 
-        val storage = deviceManager.getStorageUsage()
-        binding.tvStorageVal.text = deviceManager.getFormattedStorage()
-        binding.pbStorage.max = storage.second.toInt()
-        binding.pbStorage.progress = storage.first.toInt()
+            val storage = deviceManager.getStorageUsage()
+            binding.tvStorageVal.text = deviceManager.getFormattedStorage()
+            binding.pbStorage.max = storage.second.toInt()
+            binding.pbStorage.progress = storage.first.toInt()
 
-        binding.tvBatteryVal.text = "${deviceManager.getBatteryLevel()}%"
-        binding.tvCpuTemp.text = deviceManager.getCpuTemp()
+            binding.tvBatteryVal.text = "${deviceManager.getBatteryLevel()}%"
+            binding.tvCpuTemp.text = deviceManager.getCpuTemp()
+        } catch (e: Exception) {
+            Log.e("JarvisUI", "Error reading hardware stats", e)
+        }
     }
 
     override fun onDestroy() {
